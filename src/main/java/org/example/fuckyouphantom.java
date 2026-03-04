@@ -120,7 +120,6 @@ class EventListener implements Listener {
                     iterator.remove();
                 }else {
                     // 导弹算法
-                    System.out.println(String.valueOf(list.get(2)));
                     Entity target = list.get(0);   // 目标
                     Entity mover  = list.get(1);   // 要移动的实体
                     org.bukkit.util.Vector vector = target.getLocation().toVector()
