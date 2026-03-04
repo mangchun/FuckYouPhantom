@@ -89,7 +89,7 @@ class EventListener implements Listener {
 
 
 
-    // 更新实体对象池，删除死亡的实体，引导导弹飞向目标
+    // 更新实体对象池，删除死亡的实体，引导导弹飞向目标，超时销毁
     private void update(){
         if (!phantoms.isEmpty()){
             Iterator iterator = phantoms.iterator();
