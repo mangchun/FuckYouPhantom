@@ -6,9 +6,11 @@ import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.ExperienceOrb;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.CreatureSpawnEvent;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -84,7 +86,8 @@ class EventListener implements Listener {
                 check_snowball_to_phantom();
                 }
             };
-        if (!suo){br.runTaskTimer(plugin,20,1);}
+        // 延时发射
+        if (!suo){br.runTaskTimer(plugin,60,1);}
         }
 
 
@@ -134,6 +137,7 @@ class EventListener implements Listener {
                     mover.getWorld().spawnParticle(Particle.SNOWFLAKE,mover.getLocation(),1);
                     // 烟花声音
                     mover.getWorld().playSound(mover.getLocation(),Sound.ENTITY_FIREWORK_ROCKET_TWINKLE,2,2);
+
                 }
             }
         }
@@ -155,6 +159,10 @@ class EventListener implements Listener {
                     if (arrayList.get(0).getName().equals("Phantom")){
                         snowball.getWorld().createExplosion(snowball.getLocation(),5,false,false);
                         snowball.getWorld().spawnParticle(Particle.FLASH,snowball.getLocation(),2);
+                        // 掉落物和经验球
+                        ExperienceOrb experienceOrb = (ExperienceOrb) snowball.getWorld().spawnEntity(snowball.getLocation(),EntityType.EXPERIENCE_ORB);
+                        experienceOrb.setExperience(10);
+                        snowball.getWorld().dropItem(snowball.getLocation(),new ItemStack(Material.PHANTOM_MEMBRANE,3));
                         snowball.remove();
                     }
 
