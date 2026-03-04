@@ -21,16 +21,18 @@ public class fuckyouphantom extends JavaPlugin {
     @Override
     public void onEnable() {
         getServer().getPluginManager().registerEvents(new EventListener(), this);
-        getLogger().info("onEnable is called!");
+        getLogger().info("fuck you phantom");
     }
     @Override
     public void onDisable() {
-        getLogger().info("onDisable is called!");
+        getLogger().info("motnahp uoy kcuf");
     }
 }
 /**
  * 监听幻翼自然生成事件，并为每一位亲爱的幻翼生成独特的跟踪导弹（幻翼我草泥马）
  * 致敬幻翼
+ *
+ *
  */
 
 
@@ -46,7 +48,7 @@ class EventListener implements Listener {
     private boolean suo = false;
     @EventHandler
     public void onPlayerJoin(CreatureSpawnEvent event) {
-        // 将新生成的幻翼/雪球添加进列表并触发任务调度器。注：雪球会消除重力
+        // 将新生成的幻翼/导弹添加进列表并触发任务调度器。注意：导弹的实体在生成时会消除重力
         if (event.getEntity().getName().equals("Phantom") & event.getSpawnReason().equals(NATURAL)){
             //event.getEntity().teleport(new Location(event.getEntity().getWorld(),-6,135,3));
             Entity ph = event.getEntity();
@@ -66,7 +68,7 @@ class EventListener implements Listener {
     private void attack_Phantom(){
         // 将检测任务加入主线程执行
         BukkitRunnable br = new BukkitRunnable() {
-            // 如果雪球未被销毁则持续检测直到销毁
+            // 如果导弹实体未被销毁则持续检测直到销毁
             @Override
             public void run() {
                 suo = true;
@@ -130,7 +132,7 @@ class EventListener implements Listener {
     }
 
 
-    // 监测雪球周边实体并爆炸
+    // 监测导弹周边实体并爆炸
     private void check_snowball_to_phantom(){
         update();
         if (!snowballs.isEmpty()){
@@ -141,7 +143,7 @@ class EventListener implements Listener {
                 // 范围内的实体列表
                 ArrayList<Entity> arrayList = (ArrayList) snowball.getNearbyEntities(2, 2, 2.);
                 if (!arrayList.isEmpty()){
-                    // 生成爆炸并删除雪球
+                    // 生成爆炸并删除导弹
                     if (arrayList.get(0).getName().equals("Phantom")){
                         snowball.getWorld().createExplosion(snowball.getLocation(),5,false,false);
                         snowball.getWorld().spawnParticle(Particle.FLASH,snowball.getLocation(),2);
@@ -153,7 +155,7 @@ class EventListener implements Listener {
         }
 
     }
-    // 获取雪球生成位置
+    // 获取导弹生成位置
     private Location getSnowballSpawnPosition(Entity entity){
         Location location = entity.getLocation();
         while (location.getBlock().getType() == Material.AIR | location.getY() < 63){
