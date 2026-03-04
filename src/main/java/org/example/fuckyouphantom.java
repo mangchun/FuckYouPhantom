@@ -12,6 +12,8 @@ import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
+
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -43,13 +45,15 @@ class EventListener implements Listener {
     // 导弹对象池
     private ArrayList snowballs = new ArrayList<Entity>();
     // 一开始打算用雪球做导弹的模型，后来替换成其他的，所以变量名无需在意
-    // 导弹幻翼一对一对象池[幻翼entity，子弹entity]
+    // 导弹幻翼一对一对象池，即1个幻翼对象对于一个导弹对象[幻翼entity，导弹entity]
     private ArrayList task_queue = new ArrayList();
     private boolean suo = false;
     @EventHandler
     public void onPlayerJoin(CreatureSpawnEvent event) {
         // 将新生成的幻翼/导弹添加进列表并触发任务调度器。注意：导弹的实体在生成时会消除重力
-        if (event.getEntity().getName().equals("Phantom") & event.getSpawnReason().equals(NATURAL)){
+        // 将生成时间加入列表供超时销毁使用
+        // & event.getSpawnReason().equals(NATURAL)
+        if (event.getEntity().getName().equals("Phantom")){
             //event.getEntity().teleport(new Location(event.getEntity().getWorld(),-6,135,3));
             Entity ph = event.getEntity();
             Entity sn = event.getEntity().getWorld().spawnEntity(getSnowballSpawnPosition(event.getEntity()), EntityType.ARROW);
@@ -59,6 +63,7 @@ class EventListener implements Listener {
             ArrayList task = new ArrayList<>();
             task.add(ph);
             task.add(sn);
+            task.add(Instant.now().getEpochSecond());
             task_queue.add(task);
             attack_Phantom();
         }
@@ -108,10 +113,14 @@ class EventListener implements Listener {
             Iterator iterator = task_queue.iterator();
             while (iterator.hasNext()){
                 ArrayList<Entity> list = (ArrayList) iterator.next();
-                if(list.get(0).isDead()){
+                // 超时销毁
+                if(list.get(0).isDead() | Integer.parseInt(String.valueOf(list.get(2)))+8 <= Instant.now().getEpochSecond()){
+                    list.get(0).remove();
+                    list.get(1).remove();
                     iterator.remove();
                 }else {
                     // 导弹算法
+                    System.out.println(String.valueOf(list.get(2)));
                     Entity target = list.get(0);   // 目标
                     Entity mover  = list.get(1);   // 要移动的实体
                     org.bukkit.util.Vector vector = target.getLocation().toVector()
